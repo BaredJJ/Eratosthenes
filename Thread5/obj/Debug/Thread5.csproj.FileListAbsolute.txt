@@ -1,0 +1,6 @@
+D:\coding\Thread\Thread5\Thread5\bin\Debug\Thread5.exe.config
+D:\coding\Thread\Thread5\Thread5\obj\Debug\Thread5.csprojResolveAssemblyReference.cache
+D:\coding\Thread\Thread5\Thread5\bin\Debug\Thread5.exe
+D:\coding\Thread\Thread5\Thread5\bin\Debug\Thread5.pdb
+D:\coding\Thread\Thread5\Thread5\obj\Debug\Thread5.exe
+D:\coding\Thread\Thread5\Thread5\obj\Debug\Thread5.pdb
