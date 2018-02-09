@@ -11,20 +11,29 @@ namespace Thread5
     {
         private readonly Thread _thread;
 
-        private readonly object _locker;
+        private readonly object _locked = new object();
 
         private readonly int _step;
 
         private int _count;
 
-        private int _currentPrimeNumber;        
+        private int _currentPrimeNumber;
+
+        private static bool _flag = false;
+
+        //public static AutoResetEvent Reset { get; set; }
+
+        //static MyThread()
+        //{
+        //    Reset = new AutoResetEvent(false);
+        //}
 
         public MyThread(int step, int count, int currentPrimeNumber)
         {
             _step = step;
             _count = count;
             _currentPrimeNumber = currentPrimeNumber;
-            _locker = new object();
+            //_locked = new object();
 
             _thread = new Thread(Run);
             _thread.Start();
@@ -35,17 +44,30 @@ namespace Thread5
         /// </summary>
         private void Run()
         {
-            lock (_locker)
+            while (true)
             {
-                Console.WriteLine(Thread.CurrentThread.ManagedThreadId + " value " + _currentPrimeNumber);
-                for (int i = (int)Math.Sqrt(Program.FirstList.Count); i < Program.FirstList.Count; i++)
+                //Reset.WaitOne();
+                lock (_locked)
                 {
-                    if (Program.FirstList[i] != i && Program.FirstList[i] % _currentPrimeNumber == 0)
-                        Program.FirstList.RemoveAt(i);
-                }
+                    Console.WriteLine(Thread.CurrentThread.ManagedThreadId + " value " + _currentPrimeNumber);
+                    for (int i = (int) Math.Sqrt(Program.FirstList.Count); i < Program.FirstList.Count; i++)
+                    {
+                        
+                        if (Program.FirstList[i] != _currentPrimeNumber && Program.FirstList[i] % _currentPrimeNumber == 0)
+                            Program.FirstList.RemoveAt(i);
+                    }
 
-                this._currentPrimeNumber = Program.FirstList[Math.Min(_count + _step, Program.FirstList.Count - 1)];
+                    if (_currentPrimeNumber == Program.PrimeNumber[Program.PrimeNumber.Count - 1])
+                        _flag = true;
+
+                    this._currentPrimeNumber = Program.PrimeNumber[Math.Min(_count += _step, Program.PrimeNumber.Count - 1)];
+                }
+                //Reset.Set();
+                if (_flag)
+                    break;
+
             }
+
         }
 
         public void Join() => _thread.Join( );

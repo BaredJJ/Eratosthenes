@@ -3,15 +3,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Thread5
 {
     class Program
     {
-        //private static List<int> _firstList = new List<int>();
-
         private static List<int> _array = new List<int>();
+
+        private static List<int> _primeNumber = new List<int>();
 
         public static List<int> FirstList
         {
@@ -25,13 +26,20 @@ namespace Thread5
             }
         }
 
+        public static List<int> PrimeNumber
+        {
+            get { return _primeNumber; }
+            set { _primeNumber = value; }
+        }
+
         private static void FirstPrimeList()
         {
             for (int i = 0; i < Math.Sqrt(_array.Count); i++)
             {
                 if (StaticHelper.IsPrimeNumber(_array[i]))
                 {
-                    for (int j = i + 1; j < _array.Count; j++)
+                    Program.PrimeNumber.Add(_array[i]);
+                    for (int j = i + 1; j < Math.Sqrt(_array.Count); j++)
                     {
                         if (_array[j] != i && _array[j] % _array[i] == 0)
                             _array.RemoveAt(j);
@@ -55,16 +63,19 @@ namespace Thread5
             GetArray(length);
             FirstPrimeList();
 
-            Console.Write("Please enter to number of threads: ");
-            int numberOfThreads = StaticHelper.GetInt(Console.ReadLine());
+            //Console.Write("Please enter to number of threads: ");
+            //int numberOfThreads = StaticHelper.GetInt(Console.ReadLine());
 
-            MyThread[] threads = new MyThread[numberOfThreads];
-            for (int i = 0; i < numberOfThreads; i++)
+            //AutoResetEvent auto = new AutoResetEvent(false);
+            //MyThread.Reset = auto;
+            MyThread[] threads = new MyThread[Math.Min(8, Program.PrimeNumber.Count)];
+            for (int i = 0; i < threads.Length; i++)
             {
-                threads[i] = new MyThread(numberOfThreads, i, _array[i]);
+                threads[i] = new MyThread(threads.Length, i, Program.PrimeNumber[i]);
             }
 
-            for (int i = 0; i < numberOfThreads; i++)
+            //auto.Set();
+            for (int i = 0; i < threads.Length; i++)
             {
                 threads[i].Join();
             }
