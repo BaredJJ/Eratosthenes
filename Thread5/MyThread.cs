@@ -11,7 +11,7 @@ namespace Thread5
     {
         private readonly Thread _thread;
 
-        private readonly object _locked = new object();
+        private static readonly object _locked = new object();
 
         private readonly int _step;
 
@@ -50,11 +50,12 @@ namespace Thread5
                 lock (_locked)
                 {
                     Console.WriteLine(Thread.CurrentThread.ManagedThreadId + " value " + _currentPrimeNumber);
-                    for (int i = (int) Math.Sqrt(Program.FirstList.Count); i < Program.FirstList.Count; i++)
+                    for (int i = (int) Math.Sqrt(Program.FirstList.Count); i < Program.FirstList.Count;)
                     {
-                        
+
                         if (Program.FirstList[i] != _currentPrimeNumber && Program.FirstList[i] % _currentPrimeNumber == 0)
                             Program.FirstList.RemoveAt(i);
+                        else i++;
                     }
 
                     if (_currentPrimeNumber == Program.PrimeNumber[Program.PrimeNumber.Count - 1])
